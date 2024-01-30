@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const cartSchema = mongoose.Schema({
-  depature: String,
+  departure: String,
   arrival: String,
   date: Date,
   price:  Number,
+  isValable: Boolean,
 });
 
 const Cart = mongoose.model("carts", cartSchema)
