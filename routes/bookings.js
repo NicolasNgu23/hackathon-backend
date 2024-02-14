@@ -1,33 +1,24 @@
 var express = require('express');
 var router = express.Router();
+
 const Booking = require('../models/bookings');
 
-//Create trip in booking
-router.post('/', (req, res) => {
-  const { departure, arrival, date, price } = req.body;
-  const newBooking = new Booking({
-    departure: departure,
-    arrival: arrival,
-    date: date,
-    price: price
-  });
-  newBooking.save()
-    .then((data) => {
-      res.json({ bookings: data });
-    })
+router.put('/', (req, res) => {
+  Booking.updateMany({ isPaid: false }, { isPaid: true }).then(({ modifiedCount }) => {
+    res.json({ result: modifiedCount > 0 });
+  })
 });
 
-
-//get all my booking
 router.get('/', (req, res) => {
-  Booking.find().then(data => {
-    if (data.length === 0) {
-      res.json({result: false, error: "no booking yet"});
-    } else {
-      res.json({bookings: data});
-    }
-  });
+  Booking.find({ isPaid: true })
+    .populate('trip')
+    .then(bookings => {
+      if (bookings.length > 0) {
+        res.json({ result: true, bookings });
+      } else {
+        res.json({ result: false, error: 'No bookings found' });
+      }
+    });
 });
-
 
 module.exports = router;

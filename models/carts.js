@@ -1,13 +1,7 @@
 const mongoose = require('mongoose');
 
-const cartSchema = mongoose.Schema({
-  departure: String,
-  arrival: String,
-  date: Date,
-  price:  Number,
-  isValable: Boolean,
-});
+const connectionString = process.env.CONNECTION_STRING;
 
-const Cart = mongoose.model("carts", cartSchema)
-
-module.exports = Cart;
+mongoose.connect(connectionString, { connectTimeoutMS: 2000 })
+  .then(() => console.log('Database connected'))
+  .catch(error => console.error(error));
